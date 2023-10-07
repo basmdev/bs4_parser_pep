@@ -17,7 +17,9 @@ def pep(session):
     if response is None:
         return
     soup = BeautifulSoup(response.text, features="lxml")
-    numerical_index = find_tag(soup, "section", attrs={"id": "numerical-index"})
+    numerical_index = find_tag(
+        soup, "section", attrs={"id": "numerical-index"}
+    )
     tbody = find_tag(numerical_index, "tbody")
     tr_tags = tbody.find_all("tr")
     pep_count = 0
@@ -30,7 +32,9 @@ def pep(session):
             status_full = EXPECTED_STATUS[status]
         else:
             status_full = []
-            logging.info(f"В списке неверный статус: {status}" f"В строке: {tr_tag}")
+            logging.info(
+                f"В списке неверный статус: {status}" f"В строке: {tr_tag}"
+            )
         link = tr_tag.find("a")["href"]
         link_full = urljoin(MAIN_PEP_URL, link)
         response = get_response(session, link_full)
@@ -65,7 +69,9 @@ def whats_new(session):
     soup = BeautifulSoup(response.text, features="lxml")
     main_div = find_tag(soup, "section", attrs={"id": "what-s-new-in-python"})
     div_with_ul = find_tag(main_div, "div", attrs={"class": "toctree-wrapper"})
-    sections_by_python = div_with_ul.find_all("li", attrs={"class": "toctree-l1"})
+    sections_by_python = div_with_ul.find_all(
+        "li", attrs={"class": "toctree-l1"}
+    )
 
     results = [("Ссылка на статью", "Заголовок", "Редактор, Автор")]
     for section in tqdm(sections_by_python):
@@ -116,7 +122,9 @@ def download(session):
         return
     soup = BeautifulSoup(response.text, features="lxml")
     table_tag = find_tag(soup, "table", {"class": "docutils"})
-    pdf_a4_tag = find_tag(table_tag, "a", {"href": re.compile(r".+pdf-a4\.zip$")})
+    pdf_a4_tag = find_tag(
+        table_tag, "a", {"href": re.compile(r".+pdf-a4\.zip$")}
+    )
     pdf_a4_link = pdf_a4_tag["href"]
     archive_url = urljoin(downloads_url, pdf_a4_link)
     filename = archive_url.split("/")[-1]
