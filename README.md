@@ -44,7 +44,7 @@
 
 #### Вызов справки
 
-```http
+```bash
   python main.py -h
 ```
 
@@ -67,7 +67,7 @@
 
 #### Пример использования
 
-```http
+```bash
   python main.py whats-new --output file
 ```
 
