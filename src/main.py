@@ -47,7 +47,8 @@ def pep(session):
             final_status = page_status_parent.next_sibling.next_sibling.string
             if final_status not in status_full:
                 log_events.append(
-                    f"Не совпадают статусы: {link_full}. На странице {final_status}, а в списке {status_full[0]}."
+                    f"Не совпадают статусы: {link_full}."
+                    f"На странице {final_status}, а в списке {status_full[0]}."
                 )
             if final_status in status_count:
                 status_count[final_status] += 1
