@@ -22,42 +22,44 @@ def pep(session):
     )
     tbody = find_tag(numerical_index, "tbody")
     tr_tags = tbody.find_all("tr")
-    pep_count = 0
     status_count = {}
     results = [("Статус", "Количество")]
+    log_events = []
     for tr_tag in tqdm(tr_tags):
-        pep_count += 1
-        status = tr_tag.find("td").text[1:]
+        status = find_tag(tr_tag, "td").text[1:]
         if status in EXPECTED_STATUS:
             status_full = EXPECTED_STATUS[status]
         else:
             status_full = []
-            logging.info(
+            log_events.append(
                 f"В списке неверный статус: {status}" f"В строке: {tr_tag}"
             )
-        link = tr_tag.find("a")["href"]
+        link = find_tag(tr_tag, "a")["href"]
         link_full = urljoin(MAIN_PEP_URL, link)
         response = get_response(session, link_full)
+        if response is None:
+            return
         soup = BeautifulSoup(response.text, features="lxml")
         dl_class = find_tag(soup, "dl")
-        page_status = dl_class.find(string="Status")
+        page_status = find_tag(dl_class, string="Status")
         if page_status:
             page_status_parent = page_status.find_parent()
             final_status = page_status_parent.next_sibling.next_sibling.string
             if final_status not in status_full:
-                logging.info(
-                    f"Не совпадают статусы: {link_full}"
-                    f"На странице {final_status}, а в списке {status_full}"
+                log_events.append(
+                    f"Не совпадают статусы: {link_full}. На странице {final_status}, а в списке {status_full[0]}."
                 )
             if final_status in status_count:
                 status_count[final_status] += 1
             else:
                 status_count[final_status] = 1
         else:
-            logging.error(f"На странице {link_full} нет статуса")
+            log_events.append(f"На странице {link_full} нет статуса")
             continue
     results.extend(status_count.items())
-    results.append(("Total", pep_count))
+    results.append(("Total", sum(status_count.values())))
+    log_message = "\n".join(log_events)
+    logging.info(log_message)
     return results
 
 
@@ -132,6 +134,8 @@ def download(session):
     downloads_dir.mkdir(exist_ok=True)
     archive_path = downloads_dir / filename
     response = session.get(archive_url)
+    if response is None:
+        return
     with open(archive_path, "wb") as file:
         file.write(response.content)
     logging.info(f"Архив был загружен и сохранён: {archive_path}")
