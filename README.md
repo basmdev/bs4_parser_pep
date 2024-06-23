@@ -14,27 +14,26 @@
 
 ## Установка
 
-Склонируйте проект:
+1. Склонируйте проект:
 
 ```bash
-  git clone git@github.com:MAGFRG/bs4_parser_pep.git
+  git clone git@github.com:basmdev/bs4_parser_pep.git
 ```
 
-Перейдите в папку проекта:
+2. Перейдите в папку проекта:
 
 ```bash
   cd bs4_parser_pep
 ```
 
-Создайте и активируйте виртуальное окружение:
+3. Создайте и активируйте виртуальное окружение:
 
 ```bash
   python -m venv venv
   source venv/Scripts/activate
 ```
 
-
-Установите зависимости:
+4. Установите зависимости:
 
 ```bash
   pip install -r requirements.txt
@@ -74,5 +73,4 @@
 
 ## Автор
 
-- [Магомет Басханов](https://github.com/MAGFRG/)
-
+Mohammed Baskhanov (basmdev)
